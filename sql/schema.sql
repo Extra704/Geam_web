@@ -1,0 +1,50 @@
+CREATE DATABASE IF NOT EXISTS geam_web DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE geam_web;
+
+CREATE TABLE IF NOT EXISTS users (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    nickname VARCHAR(50) NOT NULL,
+    avatar VARCHAR(255) DEFAULT NULL,
+    role VARCHAR(20) NOT NULL DEFAULT 'USER',
+    status TINYINT NOT NULL DEFAULT 1,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS games (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    description VARCHAR(500) DEFAULT NULL,
+    cover_image VARCHAR(255) DEFAULT NULL,
+    status TINYINT NOT NULL DEFAULT 1,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS game_records (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    game_id BIGINT NOT NULL,
+    score INT NOT NULL DEFAULT 0,
+    duration INT NOT NULL DEFAULT 0,
+    result VARCHAR(50) DEFAULT NULL,
+    played_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_record_user FOREIGN KEY (user_id) REFERENCES users(id),
+    CONSTRAINT fk_record_game FOREIGN KEY (game_id) REFERENCES games(id)
+);
+
+CREATE TABLE IF NOT EXISTS announcements (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(100) NOT NULL,
+    content TEXT NOT NULL,
+    status TINYINT NOT NULL DEFAULT 1,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO games (name, type, description, cover_image, status)
+VALUES
+('Reaction Challenge', 'reaction', 'Click as fast as possible before time runs out.', NULL, 1),
+('Quiz Arena', 'quiz', 'Answer questions and compete on score.', NULL, 1);
