@@ -1,113 +1,156 @@
 # Geam Web
 
-`Geam Web` is a full-stack scaffold for a small game platform built with Vue.js, Element UI, Spring Boot, MySQL, JWT, and Docker.
+`Geam Web` 是一个适合小游戏网页项目的全栈脚手架，包含前端、后端、数据库、JWT 鉴权与 Docker 部署基础结构。
 
-It is designed for projects such as quiz games, memory games, click-speed games, or simple ranking-based mini games.
+这个框架适合你继续开发成以下类型的项目：
 
-## Stack
+- 答题闯关
+- 记忆翻牌
+- 反应测速
+- 点击得分类小游戏
+- 带排行榜的休闲网页游戏
 
-- Frontend: Vue 2, Vue Router, Vuex, Element UI, Axios
-- Backend: Spring Boot 3, Spring Security, JWT, MyBatis-Plus
-- Database: MySQL 8
-- Deployment: Docker, Docker Compose, Nginx
+## 技术栈
 
-## Features Included
+- 前端：Vue 3、Vue Router 4、Vuex 4、Element Plus、Axios
+- 后端：Spring Boot 3、Spring Security、JWT、MyBatis-Plus
+- 数据库：MySQL 8
+- 部署：Docker、Docker Compose、Nginx
 
-- User registration and login
-- JWT authentication
-- Game list and game detail API
-- Score submission and ranking API
-- Basic admin-facing API layout
-- Database schema starter
-- Frontend route and state management starter
-- Dockerized local deployment
-- Tooling and usage guide
+## 为什么这里改成 Element Plus
 
-## Project Structure
+你刚刚希望前端切到 `Vue 3`，这一点完全可以。
+
+但是需要注意：
+
+- `Element UI` 主要适配 `Vue 2`
+- `Vue 3` 对应的官方生态组件库应使用 `Element Plus`
+
+所以现在这个项目的前端框架已经按：
+
+`Vue 3 + Element Plus`
+
+来组织。
+
+## 已包含的基础能力
+
+- 用户注册
+- 用户登录
+- JWT 鉴权
+- 游戏列表接口
+- 游戏详情接口
+- 分数提交接口
+- 排行榜接口骨架
+- 后台扩展入口
+- 数据库建表 SQL
+- Docker 容器化结构
+- 技术栈使用与注意事项指南
+
+## 目录结构
 
 ```text
 Geam_web/
-  frontend/
-  backend/
-  sql/
-  docs/
-  docker-compose.yml
+  frontend/                前端项目
+  backend/                 后端项目
+  sql/                     数据库脚本
+  docs/                    使用指南
+  docker-compose.yml       容器编排
 ```
 
-## Quick Start
+## 快速启动
 
-### 1. Start MySQL
+### 1. 初始化数据库
 
-Create a database named `geam_web`.
+先创建数据库：
 
-Run:
+```sql
+CREATE DATABASE geam_web DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+然后执行：
 
 ```sql
 SOURCE sql/schema.sql;
 ```
 
-### 2. Configure Backend
+### 2. 配置后端
 
-Edit:
+编辑文件：
 
 `backend/src/main/resources/application.yml`
 
-Set your MySQL username, password, and JWT secret.
+需要重点确认：
 
-### 3. Run Backend
+- MySQL 连接地址
+- 用户名和密码
+- JWT 密钥
+
+### 3. 启动后端
 
 ```bash
 cd backend
 mvn spring-boot:run
 ```
 
-Backend default:
+默认接口地址：
 
 `http://localhost:8080/api`
 
-### 4. Run Frontend
+### 4. 启动前端
 
 ```bash
 cd frontend
 npm install
-npm run serve
+npm run dev
 ```
 
-Frontend default:
+默认前端地址：
 
 `http://localhost:8081`
 
-### 5. Run with Docker
+### 5. 使用 Docker 启动
 
 ```bash
 docker compose up --build
 ```
 
-## Suggested Development Order
+## 推荐开发顺序
 
-1. Finish authentication first
-2. Connect frontend login and registration
-3. Implement one mini game page
-4. Submit scores to backend
-5. Add ranking page
-6. Add admin pages if needed
-7. Package with Docker
+1. 先跑通注册、登录、JWT
+2. 接通前端登录页与注册页
+3. 做一个最小可运行小游戏页面
+4. 接入成绩提交接口
+5. 做排行榜页面
+6. 增加个人中心和管理页
+7. 最后补 Docker 部署
 
-## Recommended First Game
+## 推荐先做的小游戏
 
-The easiest first implementation is a quiz or reaction game because it cleanly demonstrates:
+如果你想尽快做出一个完整项目，优先推荐：
 
-- frontend interaction
-- REST API
-- score persistence
-- ranking queries
+### 1. 答题闯关
 
-## Docs
+优点：
 
-- Tooling and usage guide: [docs/STACK_GUIDE.md](./docs/STACK_GUIDE.md)
-- SQL schema: [sql/schema.sql](./sql/schema.sql)
+- 最容易做数据库设计
+- 最容易体现前后端交互
+- 最容易做排行榜
 
-## Notes
+### 2. 反应测速
 
-- This scaffold focuses on clean project structure and integration points.
-- Some business logic is intentionally left simple so you can customize the actual game rules.
+优点：
+
+- 前端交互简单
+- 分数提交逻辑清晰
+- 页面效果容易做得直观
+
+## 文档说明
+
+- 技术栈使用指南：[docs/STACK_GUIDE.md](./docs/STACK_GUIDE.md)
+- 数据库脚本：[sql/schema.sql](./sql/schema.sql)
+
+## 当前脚手架说明
+
+- 这是一个“可继续开发”的完整项目骨架，不是最终成品
+- 重点已经帮你搭好模块边界、接口分层、部署结构和文档
+- 你可以在这个基础上继续填充具体游戏玩法

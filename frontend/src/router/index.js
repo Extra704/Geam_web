@@ -1,5 +1,4 @@
-import Vue from "vue";
-import Router from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
@@ -9,10 +8,8 @@ import Profile from "../views/Profile.vue";
 import Admin from "../views/Admin.vue";
 import { getToken } from "../utils/auth";
 
-Vue.use(Router);
-
-const router = new Router({
-  mode: "hash",
+const router = createRouter({
+  history: createWebHashHistory(),
   routes: [
     { path: "/", name: "Home", component: Home },
     { path: "/login", name: "Login", component: Login },
