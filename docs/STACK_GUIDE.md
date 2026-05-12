@@ -1,191 +1,202 @@
-# Stack Guide
+# 技术栈使用指南
 
-This guide explains how to use Vue.js, Element UI, Spring Boot, MySQL, JWT, and Docker in this project, plus common pitfalls to avoid.
+这份指南说明本项目里 `Vue 3`、`Element Plus`、`Spring Boot`、`MySQL`、`JWT`、`Docker` 的使用方式，以及开发时最容易踩坑的地方。
 
-## 1. Vue.js
+## 1. Vue 3
 
-### What it is used for
+### 在项目中的作用
 
-- page rendering
-- routing
-- form interaction
-- game UI logic
-- API request handling
+- 页面渲染
+- 路由切换
+- 表单交互
+- 游戏界面逻辑
+- 与后端 API 通信
 
-### Where it appears in this project
+### 在哪里使用
 
 - `frontend/src/views/`
 - `frontend/src/components/`
 - `frontend/src/router/`
 - `frontend/src/store/`
 
-### Recommended usage
+### 推荐使用方式
 
-- Keep pages inside `views`
-- Keep reusable UI inside `components`
-- Put API calls in `src/api`
-- Put token helpers in `src/utils/auth.js`
-- Keep game state local unless many pages need it
+- 页面放在 `views`
+- 可复用组件放在 `components`
+- 接口请求统一放在 `src/api`
+- token 工具统一放在 `src/utils/auth.js`
+- 单页独有的游戏状态优先放在页面内部
 
-### Things to watch out for
+### 注意事项
 
-- Element UI is built for Vue 2, not Vue 3
-- Do not mix too much business logic into components
-- Keep route guards centralized
-- Avoid hardcoding API base URLs in every file
+- Vue 3 不要再搭配 `Element UI`
+- 路由写法与 Vue 2 的 Router 3 不同，这里用的是 `Vue Router 4`
+- 应用入口不再使用 `new Vue()`，而是 `createApp()`
+- 不要在组件里到处直接写请求地址，统一从 `request.js` 管理
 
-## 2. Element UI
+## 2. Element Plus
 
-### What it is used for
+### 为什么不是 Element UI
 
-- forms
-- tables
-- dialogs
-- buttons
-- cards
-- menus
-- notifications
+这是最关键的一点：
 
-### Recommended usage
+- `Element UI` 主要面向 `Vue 2`
+- `Element Plus` 才是 `Vue 3` 对应组件库
 
-- Use `el-form` for login and registration
-- Use `el-table` for ranking and admin pages
-- Use `el-card` for game entry cards
-- Use `Message` and `MessageBox` for user feedback
+所以如果你要保留 `Vue 3`，就应该使用：
 
-### Things to watch out for
+`Element Plus`
 
-- Import the full library only for fast development
-- For production optimization, consider component-based import
-- Keep styles consistent and avoid mixing many UI styles
+### 在项目中的作用
+
+- 登录注册表单
+- 排行榜表格
+- 游戏卡片
+- 弹窗
+- 按钮
+- 菜单导航
+- 提示消息
+
+### 推荐使用方式
+
+- 登录和注册用 `el-form`
+- 排行榜和后台列表用 `el-table`
+- 首页游戏入口用 `el-card`
+- 操作提示用 `ElMessage`
+
+### 注意事项
+
+- Vue 3 项目里不要安装 `element-ui`
+- 样式建议保持统一，不要混用太多第三方 UI 风格
+- 如果后期优化性能，可以改成按需引入
 
 ## 3. Spring Boot
 
-### What it is used for
+### 在项目中的作用
 
-- RESTful API
-- authentication
-- service layer
-- database access orchestration
-- security configuration
+- 提供 RESTful API
+- 登录鉴权
+- 业务逻辑处理
+- 数据库访问组织
+- 安全配置管理
 
-### Backend layering in this scaffold
+### 当前分层结构
 
-- `controller`: receives HTTP requests
-- `service`: business logic
-- `mapper`: database access
-- `entity`: database model
-- `dto`: request payloads
-- `vo`: response payloads
-- `security`: JWT and auth filters
+- `controller`：接收请求、返回响应
+- `service`：业务逻辑
+- `mapper`：数据库访问
+- `entity`：数据库实体
+- `dto`：请求参数对象
+- `vo`：响应对象
+- `security`：JWT 与安全过滤器
 
-### Recommended usage
+### 推荐使用方式
 
-- Keep controllers thin
-- Put validation and business rules in services
-- Return a unified response structure
-- Keep security configuration separate from business code
+- Controller 尽量轻，只做参数接收和返回
+- 业务规则放到 Service
+- 响应格式统一封装
+- JWT 和安全配置独立放在 `security`、`config`
 
-### Things to watch out for
+### 注意事项
 
-- Do not return password fields
-- Validate input on register and login
-- Keep exception handling centralized
-- Use environment variables for secrets in production
+- 不要把密码返回给前端
+- 注册和登录要做参数校验
+- 异常处理尽量集中管理
+- 生产环境不要把密钥直接写死在代码里
 
 ## 4. MySQL
 
-### What it is used for
+### 在项目中的作用
 
-- users
-- games
-- game records
-- rankings or best scores
+- 存用户信息
+- 存游戏信息
+- 存游戏记录
+- 存排行依据
 
-### Recommended usage
+### 推荐使用方式
 
-- Use `utf8mb4`
-- Add indexes for ranking queries
-- Store passwords as hashes only
-- Separate current best score from every play record when performance matters
+- 数据库字符集使用 `utf8mb4`
+- 排行查询字段要考虑加索引
+- 密码只保存加密后的哈希值
+- 历史记录表和排行榜逻辑可以分开考虑
 
-### Things to watch out for
+### 注意事项
 
-- Avoid storing plaintext passwords
-- Be careful with reserved keywords
-- Use transaction boundaries for score update logic if needed
-- Design for both history records and best-score queries
+- 绝对不要明文存密码
+- 排行榜查询如果数据大了，需要优化 SQL
+- 表结构命名尽量清晰统一
+- 如果后续加任务、关卡、道具，建议单独扩表
 
 ## 5. JWT
 
-### What it is used for
+### 在项目中的作用
 
-- stateless login authentication
-- route/API protection
+- 无状态登录认证
+- 保护用户相关接口
+- 保护成绩提交接口
+- 保护后台接口
 
-### Typical flow
+### 典型流程
 
-1. User logs in
-2. Backend verifies username and password
-3. Backend returns JWT
-4. Frontend stores JWT
-5. Frontend sends `Authorization: Bearer <token>`
-6. Backend parses the token and identifies the user
+1. 用户登录
+2. 后端校验用户名和密码
+3. 后端签发 JWT
+4. 前端保存 token
+5. 前端请求头携带 `Authorization: Bearer <token>`
+6. 后端过滤器解析 token 并识别用户
 
-### Recommended usage
+### 推荐使用方式
 
-- Keep token expiration reasonable
-- Add a JWT filter before protected endpoints
-- Parse user ID and username from token claims
-- Protect admin APIs with roles
+- 设置合理过期时间
+- 在过滤器中统一解析 token
+- token 内保存用户 id、用户名、角色
+- 管理员接口建议做角色区分
 
-### Things to watch out for
+### 注意事项
 
-- Do not store secrets directly in source code for production
-- Token expiration handling should be clear in the frontend
-- Be consistent with the `Bearer ` prefix
-- Logout on the frontend usually means deleting the token
+- 前端退出登录本质上通常是删除本地 token
+- token 过期后前端要有跳转登录逻辑
+- `Bearer ` 前缀要保持一致
+- JWT secret 在生产环境必须安全管理
 
 ## 6. Docker
 
-### What it is used for
+### 在项目中的作用
 
-- consistent local deployment
-- packaging frontend and backend
-- easy environment setup
+- 一键拉起前后端和数据库
+- 保证不同机器部署环境一致
+- 方便课程项目展示和交付
 
-### Services in this scaffold
+### 当前容器结构
 
 - `mysql`
 - `backend`
 - `frontend`
 
-### Recommended usage
+### 推荐使用方式
 
-- Backend reads DB config from environment variables
-- Frontend is served by Nginx
-- Use `docker compose up --build` for local full-stack boot
+- 后端数据库配置通过环境变量传入
+- 前端打包后由 Nginx 托管
+- 本地联调或演示时用 `docker compose up --build`
 
-### Things to watch out for
+### 注意事项
 
-- Wait for MySQL readiness before backend initialization in real projects
-- Keep secrets out of public repositories
-- Expose only needed ports
-- Confirm cross-origin configuration when frontend and backend are split
+- MySQL 启动速度可能慢于后端，真实项目要考虑服务就绪问题
+- 不要把生产环境密钥直接提交到仓库
+- 端口不要暴露过多
+- 前后端分离部署时要确认跨域配置
 
-## 7. Suggested Workflow
+## 7. 这套项目怎么开发最顺
 
-1. Build and test backend auth APIs
-2. Connect frontend login flow
-3. Build one game page
-4. Connect score submission
-5. Add ranking page
-6. Add Docker packaging
+1. 先跑通后端注册和登录接口
+2. 再接前端登录页和注册页
+3. 做一个最小可运行小游戏
+4. 接入成绩提交
+5. 做排行榜页
+6. 最后做 Docker 部署
 
-## 8. Production Notes
+## 8. 额外建议
 
-- enable HTTPS
-- rotate JWT secrets
-- hash passwords with BCrypt
-- separate dev and prod configs
-- use reverse proxy and proper logging
+- 如果你是课程项目，优先保证“能登录、能玩、能提交分数、能看排行榜”
+- 如果你想做得更完整，可以继续加个人中心、公告、管理员后台
+- 如果你想让我继续帮你往下做，下一步最适合直接补“真实可运行的小游戏逻辑”
