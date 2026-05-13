@@ -13,5 +13,6 @@ mybatis-plus:
     map-underscore-to-camel-case: true
 
 jwt:
-  secret: ${JWT_SECRET:change-this-secret}
+  secret: ${JWT_SECRET:this-is-a-very-long-jwt-secret-key-for-geam-web-2026}
   expiration: 86400000
+
